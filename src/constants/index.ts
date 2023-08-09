@@ -1,6 +1,7 @@
 export const SCREEN = {
   FORM: 'FORM',
   OTP: 'OTP',
+  SUCCESS: 'SUCCESS',
 };
 
 export const WINDOW = {
@@ -13,10 +14,12 @@ export const COLORS = {
   INPUT_BORDER_GREY: '#909090',
   PLACEHOLDER_GREY: '#B1B1B1',
   CONTINUE_GREY: '#646464',
+  SECONDARY_GREY: '#EFEFEF',
   BLACK: '#000000',
   DISABLED_BUTTON: '#EFEFEF',
   BLUE: '#2760B6',
   WHITE: '#FFFFFF',
+  SUCCESS_GREEN: '#188748',
 };
 
 export const STRINGS = {

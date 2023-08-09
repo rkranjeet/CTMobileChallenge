@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -17,7 +17,7 @@ import {
   panValidator,
 } from '../utils/validators';
 
-const Form = ({ navigation }) => {
+const Form = ({ navigation }: any) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [aadhar, setAdhar] = useState('');
@@ -29,6 +29,7 @@ const Form = ({ navigation }) => {
   const [continueDisabled, setContinueDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  //aadhar validation
   useEffect(() => {
     if (aadharValidator(aadhar) !== aadharValidated) {
       setLoading(true);
@@ -39,6 +40,7 @@ const Form = ({ navigation }) => {
     }
   }, [aadhar, aadharValidated]);
 
+  //pan validation
   useEffect(() => {
     if (panValidator(pan) !== panValidated) {
       setLoading(true);
@@ -50,6 +52,7 @@ const Form = ({ navigation }) => {
     }
   }, [pan, panValidated]);
 
+  //continue button validation
   useEffect(() => {
     if (
       name != '' &&
@@ -63,18 +66,9 @@ const Form = ({ navigation }) => {
       setContinueDisabled(true);
     }
   }, [name, email, aadharValidated, panValidated, dob, continueDisabled]);
-  return (
-    <View style={styles.container}>
-      <Image
-        source={require('../assets/images/ct_logo.jpeg')}
-        style={styles.logo}
-      />
-      <View style={{ marginTop: normalizeY(15) }}>
-        <Text style={styles.stepText}>{STRINGS.STEP_1}</Text>
-      </View>
-      <View style={{ marginTop: normalizeY(10) }}>
-        <Text style={styles.detailsText}>{STRINGS.ENTER_DETAILS}</Text>
-      </View>
+
+  const renderName = useCallback(() => {
+    return (
       <View style={{ marginTop: normalizeY(15) }}>
         <CTTextInput
           label={STRINGS.SHOP_OWNER_NAME}
@@ -82,9 +76,13 @@ const Form = ({ navigation }) => {
           placeholderTextColor={COLORS.PLACEHOLDER_GREY}
           value={name}
           onChangeText={(text: string) => setName(text)}
-          // validated
         />
       </View>
+    );
+  }, [name]);
+
+  const renderEmail = useCallback(() => {
+    return (
       <View style={{ marginTop: normalizeY(15) }}>
         <CTTextInput
           label={STRINGS.EMAIL}
@@ -94,6 +92,11 @@ const Form = ({ navigation }) => {
           onChangeText={(text: string) => setEmail(text)}
         />
       </View>
+    );
+  }, [email]);
+
+  const renderAadhar = useCallback(() => {
+    return (
       <View style={{ marginTop: normalizeY(15) }}>
         <CTTextInput
           label={STRINGS.AADHAR}
@@ -111,6 +114,11 @@ const Form = ({ navigation }) => {
           validated={aadharValidated}
         />
       </View>
+    );
+  }, [aadhar, aadharValidated]);
+
+  const renderPan = useCallback(() => {
+    return (
       <View style={{ marginTop: normalizeY(15) }}>
         <CTTextInput
           label={STRINGS.PAN}
@@ -128,38 +136,38 @@ const Form = ({ navigation }) => {
           validated={panValidated}
         />
       </View>
-      {dobEnabled ? (
-        <View style={{ marginTop: normalizeY(15) }}>
-          <CTTextInput
-            label={STRINGS.DOB}
-            placeholder={STRINGS.DOB_PLACEHOLDER}
-            placeholderTextColor={COLORS.PLACEHOLDER_GREY}
-            value={dob}
-            onChangeText={(text: string) => setDob(text)}
-            masked
-            type={'datetime'}
-            options={{
-              format: 'DD/MM/YYYY',
-            }}
-          />
-        </View>
-      ) : null}
-      {loading ? (
-        <View
-          style={{
-            flex: 1,
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            alignItems: 'center',
-            justifyContent: 'center',
+    );
+  }, [pan, panValidated]);
+
+  const renderDob = useCallback(() => {
+    return dobEnabled ? (
+      <View style={{ marginTop: normalizeY(15) }}>
+        <CTTextInput
+          label={STRINGS.DOB}
+          placeholder={STRINGS.DOB_PLACEHOLDER}
+          placeholderTextColor={COLORS.PLACEHOLDER_GREY}
+          value={dob}
+          onChangeText={(text: string) => setDob(text)}
+          masked
+          type={'datetime'}
+          options={{
+            format: 'DD/MM/YYYY',
           }}
-        >
-          <ActivityIndicator size="large" color={COLORS.BLUE} />
-        </View>
-      ) : null}
+        />
+      </View>
+    ) : null;
+  }, [dob, dobEnabled]);
+
+  const renderLoading = useCallback(() => {
+    return loading ? (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={COLORS.BLUE} />
+      </View>
+    ) : null;
+  }, [loading]);
+
+  const renderContinueButton = useCallback(() => {
+    return (
       <View style={{ position: 'absolute', bottom: normalizeY(10) }}>
         <TouchableOpacity
           disabled={continueDisabled}
@@ -188,6 +196,28 @@ const Form = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       </View>
+    );
+  }, [continueDisabled, navigation]);
+
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require('../assets/images/ct_logo.jpeg')}
+        style={styles.logo}
+      />
+      <View style={{ marginTop: normalizeY(15) }}>
+        <Text style={styles.stepText}>{STRINGS.STEP_1}</Text>
+      </View>
+      <View style={{ marginTop: normalizeY(10) }}>
+        <Text style={styles.detailsText}>{STRINGS.ENTER_DETAILS}</Text>
+      </View>
+      {renderName()}
+      {renderEmail()}
+      {renderAadhar()}
+      {renderPan()}
+      {renderDob()}
+      {renderLoading()}
+      {renderContinueButton()}
     </View>
   );
 };
@@ -200,7 +230,7 @@ const styles = StyleSheet.create({
     marginHorizontal: normalizeX(30),
   },
   logo: {
-    marginTop: 30,
+    marginTop: normalizeY(60),
     width: normalizeX(90),
     height: normalizeY(90),
   },
@@ -215,6 +245,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: COLORS.BLACK,
+  },
+  loading: {
+    flex: 1,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   continue: {
     width: normalizeX(300),

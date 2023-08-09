@@ -1,26 +1,39 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, { useCallback, useState } from 'react';
 import { normalizeX, normalizeY } from '../utils/normalize';
 import Pdf from 'react-native-pdf';
-import { COLORS, STRINGS } from '../constants';
+import { COLORS, SCREEN, STRINGS } from '../constants';
 import OtpInputs from 'react-native-otp-inputs';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const { width } = Dimensions.get('window');
+const source = {
+  uri: 'bundle-assets://pdfs/Sample-PDF.pdf',
+};
 
-const Otp = () => {
-  const source = {
-    uri: 'bundle-assets://pdfs/Sample-PDF.pdf',
-  };
-
+const Otp = ({ navigation }: any) => {
   const [otp, setOtp] = useState('');
-  return (
-    <View style={styles.container}>
-      <View style={{ marginTop: normalizeX(30) }}>
-        <Text style={styles.stepText}>{STRINGS.STEP_2}</Text>
-      </View>
-      <View style={{ marginTop: normalizeX(15) }}>
-        <Text style={styles.detailsText}>{STRINGS.PLS_ENTER_OTP}</Text>
-      </View>
+  const [loading, setLoading] = useState(false);
+
+  const onSendPress = useCallback(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      console.log(otp);
+      navigation.navigate(SCREEN.SUCCESS);
+    }, 1000);
+  }, [navigation, otp]);
+
+  const renderPdf = useCallback(() => {
+    return (
       <Pdf
         source={source}
         onLoadComplete={(numberOfPages, filePath) => {
@@ -39,6 +52,11 @@ const Otp = () => {
         showsHorizontalScrollIndicator
         style={styles.pdf}
       />
+    );
+  }, []);
+
+  const renderOtpBottomTray = useCallback(() => {
+    return (
       <View style={styles.otpBottomTray}>
         <View>
           <Text style={styles.enterOtpText}>{STRINGS.ENTER_OTP}</Text>
@@ -48,8 +66,7 @@ const Otp = () => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: 'red',
-            marginTop: normalizeX(15),
+            marginTop: normalizeX(20),
           }}
         >
           <OtpInputs
@@ -65,10 +82,10 @@ const Otp = () => {
               paddingLeft: normalizeX(9),
               opacity: 0.5,
               borderRadius: normalizeX(4),
+              marginRight: normalizeX(10),
             }}
             style={{
               flexDirection: 'row',
-              //marginTop: normalizeY(15),
             }}
             inputStyles={{
               fontWeight: '700',
@@ -77,16 +94,70 @@ const Otp = () => {
               color: COLORS.BLACK,
             }}
           />
-          <View
+          <TouchableOpacity
+            onPress={onSendPress}
+            disabled={loading}
             style={{
-              width: 48,
-              height: 48,
-              backgroundColor: 'black',
-              alignSelf: 'center',
+              width: normalizeY(48),
+              height: normalizeY(48),
+              borderRadius: normalizeY(24),
+              backgroundColor: COLORS.WHITE,
+              opacity: 0.9,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-          ></View>
+          >
+            {!loading ? (
+              <Image
+                source={require('../assets/images/send_icon.png')}
+                style={{ height: normalizeY(24), width: normalizeY(24) }}
+              ></Image>
+            ) : (
+              <ActivityIndicator size="small" color={COLORS.BLUE} />
+            )}
+          </TouchableOpacity>
         </View>
+        <View style={{ marginTop: normalizeX(20) }}>
+          <Text
+            style={{
+              fontWeight: '400',
+              fontSize: 12,
+              lineHeight: 14,
+              color: COLORS.SECONDARY_GREY,
+            }}
+          >
+            {STRINGS.DIDNT_GET_CODE}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => {}}
+          style={{ marginTop: normalizeX(15) }}
+        >
+          <Text
+            style={{
+              fontWeight: '700',
+              fontSize: 14,
+              lineHeight: 16,
+              color: COLORS.SECONDARY_GREY,
+            }}
+          >
+            {STRINGS.RESEND}
+          </Text>
+        </TouchableOpacity>
       </View>
+    );
+  }, [loading, onSendPress]);
+
+  return (
+    <View style={styles.container}>
+      <View style={{ marginTop: normalizeX(30) }}>
+        <Text style={styles.stepText}>{STRINGS.STEP_2}</Text>
+      </View>
+      <View style={{ marginTop: normalizeX(15) }}>
+        <Text style={styles.detailsText}>{STRINGS.PLS_ENTER_OTP}</Text>
+      </View>
+      {renderPdf()}
+      {renderOtpBottomTray()}
     </View>
   );
 };
@@ -102,7 +173,7 @@ const styles = StyleSheet.create({
   pdf: {
     marginTop: normalizeX(10),
     width: normalizeX(300),
-    height: normalizeY(350),
+    height: normalizeY(400),
   },
   stepText: {
     fontWeight: '700',
