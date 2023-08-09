@@ -6,4 +6,4 @@ export const panValidator = (pan: string) =>
   /[A-Z]{5}[0-9]{4}[A-Z]{1}/.test(pan);
 
 export const dateValidator = (dateString: string) =>
-  moment(dateString, 'DD/MM/YYYY').isValid();
+  moment(dateString, 'DD/MM/YYYY', true).isValid();

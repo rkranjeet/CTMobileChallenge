@@ -1,5 +1,6 @@
 export const SCREEN = {
   FORM: 'FORM',
+  OTP: 'OTP',
 };
 
 export const WINDOW = {
@@ -31,6 +32,11 @@ export const STRINGS = {
   PAN_PLACEHOLDER: 'ABCDE1234F',
   DOB: 'Date of Birth',
   DOB_PLACEHOLDER: 'DD/MM/YYYY',
+  STEP_2: 'Step 2',
+  PLS_ENTER_OTP: 'Please enter OTP',
+  ENTER_OTP: 'Enter OTP',
+  DIDNT_GET_CODE: 'Didn’t get the code yet ?',
+  RESEND: 'RESEND',
 };
 
 export const DELAYS = {

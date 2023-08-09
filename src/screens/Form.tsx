@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 import { emailValidator, normalizeX, normalizeY } from '../utils/normalize';
 import CTTextInput from '../components/CTTextInput';
-import { COLORS, DELAYS, STRINGS } from '../constants';
+import { COLORS, DELAYS, SCREEN, STRINGS } from '../constants';
 import {
   aadharValidator,
   dateValidator,
   panValidator,
 } from '../utils/validators';
 
-const Form = () => {
+const Form = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [aadhar, setAdhar] = useState('');
@@ -161,7 +161,12 @@ const Form = () => {
         </View>
       ) : null}
       <View style={{ position: 'absolute', bottom: normalizeY(10) }}>
-        <TouchableOpacity disabled={continueDisabled}>
+        <TouchableOpacity
+          disabled={continueDisabled}
+          onPress={() => {
+            navigation.navigate(SCREEN.OTP);
+          }}
+        >
           <View
             style={[
               styles.continue,
