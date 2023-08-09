@@ -16,7 +16,7 @@ A React Native Challenge.
 Clone the project
 
 ```bash
-  git clone https://github.com/rkranjeet/xxx.git
+  git clone https://github.com/rkranjeet/CTMobileChallenge.git
 ```
 
 Go to the project directory
